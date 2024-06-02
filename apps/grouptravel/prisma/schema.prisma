@@ -1,0 +1,67 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  age         Int?
+  createdAt   DateTime        @default(now())
+  description String?
+  firstName   String?
+  gender      EnumUserGender?
+  hobbies     String?
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  lastName    String?
+  location    String?
+  password    String
+  rating      Json?
+  roles       Json
+  travels     Travel?
+  updatedAt   DateTime        @updatedAt
+  username    String          @unique
+}
+
+model Travel {
+  activity   Activity[]
+  createdAt  DateTime   @default(now())
+  createdby  User       @relation(fields: [id], references: [id])
+  id         String     @unique @db.ObjectId
+  endpoint   String
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  startpoint String
+  tags       String?
+  updatedAt  DateTime   @updatedAt
+}
+
+model Activity {
+  accommodation        String?
+  afternoonDescription String?
+  afternoonPoint       String?
+  createdAt            DateTime @default(now())
+  eveningDescription   String?
+  eveningPoint         String?
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  morningDescription   String?
+  price                Float?
+  startpoint           String?
+  travel               Travel?  @relation(fields: [travelId], references: [id])
+  travelId             String?  @db.ObjectId
+  updatedAt            DateTime @updatedAt
+}
+
+model TravelTag {
+  description String?
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+}
+
+enum EnumUserGender {
+  Male
+  Female
+  Other
+}
